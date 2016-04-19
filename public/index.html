@@ -5,20 +5,13 @@
 	<title>Socket.io Basics</title>
 </head>
 <body>
-	<div class="messages">
-		<!-- messages end up here -->
-	</div>
-	<form action="#" id="message-form">
-		<input type="text" name="message" />
-		<input type="submit" value="Send" />
+	<h1>Join Chat</h1>
+
+	<form action="/chat.html">
+		<label for="">Display Name</label>
+		<input type="text" name="name" />
+		<input type="submit" value="Join Chat">
+
 	</form>
-	
-	<script src="/js/QueryParams.js"></script>
-	<script src="/js/jquery-2.2.3.min.js"></script>
-	<script src="/js/socket.io-1.3.7.js"></script>
-	<script src="/js/app.js"></script>
-	<script src="/js/moment.min.js"></script>
-
-
 </body>
 </html>
