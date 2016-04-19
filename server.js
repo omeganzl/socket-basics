@@ -5,6 +5,7 @@ var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 
+
 app.use(express.static(__dirname + '/public'));
 
 io.on('connection', function(socket) {
@@ -17,6 +18,7 @@ io.on('connection', function(socket) {
 	});
 
 	socket.emit('message', {
+		name: 'System',
 		text: 'Welcome to chat application!',
 		timestamp: moment().valueOf()
 	});
