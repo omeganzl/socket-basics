@@ -3,6 +3,10 @@ var room = getQueryVariable('room');
 var socket = io();
 
 console.log(name + 'has joined ' + room);
+
+// update h1 tag
+$('.room-title').text(room);
+
 socket.on('connect', function() {
 	console.log('connected to socket.io server!');
 	// io.emit('message', {
