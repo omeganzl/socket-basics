@@ -34,41 +34,41 @@ function sendCurrentUsers(socket) {
 	})
 }
 
-function sendPrivate(socket, message) {
-	var info = clientInfo[socket.id];
-	console.log(message);
-	var stripCommand = message.text.slice(9);
-	console.log(stripCommand);
-	var user = stripCommand.split(":")
-	console.log(user);
-	var sendUser = user[0];
-	console.log(sendUser)
-	var privMessage = user[1];
-	var users = [];
+// function sendPrivate(socket, message) {
+// 	var info = clientInfo[socket.id];
+// 	console.log(message);
+// 	var stripCommand = message.text.slice(9);
+// 	console.log(stripCommand);
+// 	var user = stripCommand.split(":")
+// 	console.log(user);
+// 	var sendUser = user[0];
+// 	console.log(sendUser)
+// 	var privMessage = user[1];
+// 	var users = [];
 
-	Object.keys(clientInfo).forEach(function(socketId) {
-		var userInfo = clientInfo[socketId];
+// 	Object.keys(clientInfo).forEach(function(socketId) {
+// 		var userInfo = clientInfo[socketId];
 
-		if (info.room === userInfo.room) {
-			users.push(userInfo.name);
-			console.log("sendPrivate result: " + users);
-		}
+// 		if (info.room === userInfo.room) {
+// 			users.push(userInfo.name);
+// 			console.log("sendPrivate result: " + users);
+// 		}
 
-	});
+// 	});
 
 
-	for (var i = 0; i < users.length; i++) {
-		console.log(sendUser);
-		console.log(typeof sendUser);
-		if (users[i] === sendUser) {
-			console.log("MATCHED NAME!");
-			console.log(clientInfo[socket.id])
-			message.timestamp = moment().valueOf();
-			io.to(clientInfo[socket.id].name).emit('message', privMessage);
-		} else {
-			console.log("USER NOT FOUND");
-		}
-	}
+// 	for (var i = 0; i < users.length; i++) {
+// 		console.log(sendUser);
+// 		console.log(typeof sendUser);
+// 		if (users[i] === sendUser) {
+// 			console.log("MATCHED NAME!");
+// 			console.log(clientInfo[socket.id])
+// 			message.timestamp = moment().valueOf();
+// 			io.to(clientInfo[socket.id].name).emit('message', privMessage);
+// 		} else {
+// 			console.log("USER NOT FOUND");
+// 		}
+// 	}
 
 
 	// users.forEach(function(sendUser) {
@@ -80,7 +80,7 @@ function sendPrivate(socket, message) {
 	// 		console.log("USER NOT FOUND");
 	// 	}
 	// });
-}
+//}
 
 io.on('connection', function(socket) {
 	console.log('User connected via socket.io!');
