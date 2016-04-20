@@ -10,6 +10,78 @@ app.use(express.static(__dirname + '/public'));
 
 var clientInfo = {};
 
+//send current users to provided socket
+function sendCurrentUsers(socket) {
+	var info = clientInfo[socket.id];
+	var users = [];
+
+	if (typeof info === 'undefined') {
+		return;
+	}
+
+	Object.keys(clientInfo).forEach(function(socketId) {
+		var userInfo = clientInfo[socketId];
+
+		if (info.room === userInfo.room) {
+			users.push(userInfo.name);
+		}
+	});
+
+	socket.emit('message', {
+		name: 'System',
+		text: 'Current Users: ' + users.join(', '),
+		timestamp: moment.valueOf()
+	})
+}
+
+function sendPrivate(socket, message) {
+	var info = clientInfo[socket.id];
+	console.log(message);
+	var stripCommand = message.text.slice(9);
+	console.log(stripCommand);
+	var user = stripCommand.split(":")
+	console.log(user);
+	var sendUser = user[0];
+	console.log(sendUser)
+	var privMessage = user[1];
+	var users = [];
+
+	Object.keys(clientInfo).forEach(function(socketId) {
+		var userInfo = clientInfo[socketId];
+
+		if (info.room === userInfo.room) {
+			users.push(userInfo.name);
+			console.log("sendPrivate result: " + users);
+		}
+
+	});
+
+
+	for (var i = 0; i < users.length; i++) {
+		console.log(sendUser);
+		console.log(typeof sendUser);
+		if (users[i] === sendUser) {
+			console.log("MATCHED NAME!");
+			console.log(clientInfo[socket.id])
+			message.timestamp = moment().valueOf();
+			io.to(clientInfo[socket.id].name).emit('message', privMessage);
+		} else {
+			console.log("USER NOT FOUND");
+		}
+	}
+
+
+	// users.forEach(function(sendUser) {
+	// 	console.log("users: " + users);
+	// 	console.log("sendUser: " + sendUser);
+	// 	if (users === sendUser) {
+	// 		console.log("MATCHED NAME!");
+	// 	} else {
+	// 		console.log("USER NOT FOUND");
+	// 	}
+	// });
+}
+
 io.on('connection', function(socket) {
 	console.log('User connected via socket.io!');
 
@@ -26,7 +98,7 @@ io.on('connection', function(socket) {
 		}
 	});
 
-	socket.on('joinRoom', function (req) {
+	socket.on('joinRoom', function(req) {
 		clientInfo[socket.id] = req;
 		socket.join(req.room);
 		socket.broadcast.to(req.room).emit('message', {
@@ -38,8 +110,18 @@ io.on('connection', function(socket) {
 
 	socket.on('message', function(message) {
 		console.log('message received: ' + message.text);
-		message.timestamp = moment().valueOf();
-		io.to(clientInfo[socket.id].room).emit('message', message);
+
+		if (message.text === '@currentUsers') {
+			sendCurrentUsers(socket);
+		} else if (message.text.startsWith('@private')) {
+			sendPrivate(socket, message);
+		} else {
+			message.timestamp = moment().valueOf();
+			io.to(clientInfo[socket.id].room).emit('message', message);
+
+		}
+
+
 	});
 
 	socket.emit('message', {
